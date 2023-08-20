@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Comfortaa&display=swap" rel="stylesheet">
+    <style>
+        *{
+            /* overflow: hidden; */
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+            font-family: 'Comfortaa', cursive;
+        }
+
+        *:focus-visible {
+            border: none;
+            outline: none;
+        }
+
+        img.bgImg1 {
+            margin: 0;
+            padding: 0;
+            top: -10vh;
+            left: -10vw;
+            position: absolute;
+            width: 120vw;
+            height: 120vh;
+            filter: blur(5px);
+            overflow: hidden;
+            z-index: -1;
+        }
+        img.bgImg2 {
+            margin: 0;
+            padding: 0;
+            top: 100vh;
+            left: -10vw;
+            position: absolute;
+            width: 120vw;
+            height: 120vh;
+            filter: blur(5px);
+            overflow: hidden;
+            transform: rotateX(180deg);
+            z-index: -1;
+        }
+
+
+
+        div.main {
+            position: absolute;
+            border-radius: 20px;
+            width: 60vw;
+            height: 200vh;
+            left: 20vw;
+            top: 10vh;
+            backdrop-filter: contrast(90%) blur(25px) grayscale(25%);
+            background-color: rgba(0, 0, 0, .1);
+            overflow: hidden;
+            display: flex;
+            /* justify-content: center; */
+            flex-direction: column;
+            align-items: center;
+        }
+        h1 {
+            position: relative;
+            top: 50px;
+            font-size: 50px;
+        }
+
+        textarea {
+            position: relative;
+            border: none;
+            width: 85%;
+            border-radius: 10px;
+            height: 25%; 
+            font-size: 18px;
+            background-color: rgba(0, 0, 0, .2);
+            backdrop-filter: contrast(0%) blur(50px) grayscale(40%);
+            resize: none;
+            padding: 15px;
+            color: white;
+        }
+
+        textarea::placeholder {
+            color: white;
+        }
+
+        textarea#input {
+            top: 60px;
+        }
+
+
+        textarea#output {
+            top: 80px;
+        }
+
+        button {
+            border: none;
+            background-color: rgba(255, 255, 255, .3);
+            backdrop-filter: contrast(0%) blur(50px) grayscale(40%);
+            position: relative;
+            top: 70px;
+            height: 100px;
+            width: 20%;
+            border-radius: 20px;
+            font-size: 25px;
+            transition: all 1s;
+        }
+
+        button:hover {
+            background-color: rgba(255, 255, 255, 1);
+            backdrop-filter: contrast(0%) blur(50px) grayscale(40%);
+        }
+
+        div.loader {
+            position: absolute;
+            width: 230px;
+            height: 230px;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            /* background-color: white; */
+            border-radius: 10px;
+            background-color: rgba(0, 0, 0, .2);
+            backdrop-filter: contrast(0%) blur(50px) grayscale(40%) opacity(10%);
+        }
+        .middle {
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  position: absolute;
+}
+.bar {
+  width: 10px;
+  height: 70px;
+  background: #fff;
+  display: inline-block;
+  transform-origin: bottom center;
+  border-top-right-radius: 20px;
+  border-top-left-radius: 20px;
+  /*   box-shadow:5px 10px 20px inset rgba(255,23,25.2); */
+  animation: loader 1.2s linear infinite;
+}
+.bar1 {
+  animation-delay: 0.1s;
+}
+.bar2 {
+  animation-delay: 0.2s;
+}
+.bar3 {
+  animation-delay: 0.3s;
+}
+.bar4 {
+  animation-delay: 0.4s;
+}
+.bar5 {
+  animation-delay: 0.5s;
+}
+.bar6 {
+  animation-delay: 0.6s;
+}
+.bar7 {
+  animation-delay: 0.7s;
+}
+.bar8 {
+  animation-delay: 0.8s;
+}
+
+@keyframes loader {
+  0% {
+    transform: scaleY(0.1);
+    background: red;
+  }
+  50% {
+    transform: scaleY(1);
+    background: blueviolet;
+  }
+  100% {
+    transform: scaleY(0.1);
+    background: transparent;
+  }
+}
+
+
+
+    </style>
+</head>
+<body>
+    <img src="./background.png" alt="background-image1" class="bgImg1">
+    <img src="./background.png" alt="background-image2" class="bgImg2">
+    <div class="main">
+        <h1>Rewrite</h1>
+        <textarea name="input" id="input" cols="30" rows="10" placeholder="Inseret Text Here."></textarea>
+        <button type="button">Rewrite</button>
+        <textarea name="output" id="output" cols="30" rows="10" placeholder="Your rewriten text will apear here when finished." readonly></textarea>
+    </div>
+
+    <div class="loader" hidden>
+        <div class="middle">
+            <div class="bar bar1"></div>
+            <div class="bar bar2"></div>
+            <div class="bar bar3"></div>
+            <div class="bar bar4"></div>
+            <div class="bar bar5"></div>
+            <div class="bar bar6"></div>
+            <div class="bar bar7"></div>
+            <div class="bar bar8"></div>
+          </div>
+    </div>
+    <script>
+        document.querySelector('button').addEventListener('click', async() => {
+            let input = document.querySelector('textarea#input').value
+            document.querySelector('div.loader').hidden = false
+            let res = await fetch('/rewrite', {method: 'POST', body: new URLSearchParams({document: input})}).then(x => x.json())
+            console.log(res)
+            document.querySelector('textarea#output').value = res.document
+            document.querySelector('div.loader').hidden = true
+        })
+    </script>
+</body>
+</html>
